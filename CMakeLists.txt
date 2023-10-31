@@ -11,6 +11,6 @@ include_directories(dependencies/GLAD)
 include_directories(dependencies/KHR)
 include_directories(dependencies/GLM)
 
-add_executable(OpenGLLessons main.cpp dependencies/GLAD/glad.c OpenGLApp.h OpenGlApp.cpp)
+add_executable(OpenGLLessons main.cpp dependencies/GLAD/glad.c OpenGLApp.h OpenGlApp.cpp Utils.cpp Utils.h)
 
 target_link_libraries(OpenGLLessons PUBLIC glfw)
