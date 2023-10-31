@@ -14,6 +14,7 @@ public:
 	static void checkGLErrors();
 
 	class VBO {
+	public:
 		inline static const GLuint invalidId = 0;
 
 		static void generate(GLsizei n, GLuint* arrays);
@@ -21,6 +22,7 @@ public:
 		static void unbind(GLenum target);
 		static bool isBind();
 		static void buffData(GLenum target, GLsizeiptr size, const void* data, GLenum usage);
+		static void deleteBuffers(GLsizei n, GLuint* arrays);
 
 	private:
 		inline static GLuint id = invalidId;
@@ -28,6 +30,7 @@ public:
 	};
 
 	class VAO {
+	public:
 		inline static const GLuint invalidId = 0;
 
 		static void generate(GLsizei n, GLuint* arrays);
@@ -38,6 +41,7 @@ public:
 		static void vertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized,
 			GLsizei stride, const void* pointer);
 		static void disableVertexAttribArray(GLuint index);
+		static void deleteVertexArrays(GLsizei n, GLuint* arrays);
 
 	private:
 		inline static GLuint id = invalidId;
@@ -73,42 +77,14 @@ public:
 		[[nodiscard]] static GLuint create();
 		static void attachShader(GLuint shaderProgram, GLuint shader);
 		static void link(GLuint shaderProgram);
-		static bool isAttached();
+		[[nodiscard]]static bool isAttached();
 		static void deleteProgram(GLuint shaderProgram);
+		static void use(GLuint shaderProgram);
+		[[nodiscard]] static GLint getProgramiv(GLuint shaderProgram, GLenum pname);
 	private:
 		inline static GLuint id = invalidId;
 	};
-private:
-};
 
-//class OpenGlApp {
-//public:
-//	OpenGlApp();
-//	~OpenGlApp();
-//
-//	void draw();
-//private:
-//	bool init();
-//	bool shadersSetup();
-//	bool setupVertexShader(GLuint& vertexShader);
-//	bool setupFragmentShader(GLuint& fragmentShader);
-//	bool setupShaderProgram(GLuint& vertexShader, GLuint& fragmentShader);
-//	void initVertexBuffer();
-//	void removeShaders(GLuint& vertexShader, GLuint& fragmentShader);
-//	void setupGLFWVersion();
-//
-//	void initializeShaderSources();
-//	std::string checkShaderFailureStatus(GLuint shader, GLenum pname);
-//	std::string checkProgramFailureStatus(GLuint program, GLenum pname);
-//	bool createWindow();
-//private:
-//	const char* vertexShaderSource = nullptr;
-//	const char* fragmentShaderSource = nullptr;
-//	//std::string vertexShaderSource{};
-//	//std::string fragmentShaderSource{};
-//	GLFWwindow* window = nullptr;
-//	GLuint shaderProgram = 0;
-//	GLuint VBO = 0;
-//	GLuint VAO = 0;
-//
-//};
+	static void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
+	static void drawArrays(GLenum mode, GLint first,GLsizei count);
+};
