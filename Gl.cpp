@@ -73,8 +73,8 @@ void Gl::VAO::enableVertexAttribArray(GLuint index)
 {
 	if (!isBind())
 		throw std::exception("VAO is not bound");
-	else
-		glEnableVertexAttribArray(index);
+	
+	glEnableVertexAttribArray(index);
 	checkGLErrors();
 }
 
@@ -83,11 +83,10 @@ void Gl::VAO::vertexAttribPointer(GLuint index, GLint size, GLenum type, GLboole
 {
 	if (!isBind())
 		throw std::exception("VAO is not bound");
-	else {
-		enableVertexAttribArray(index);
-		glVertexAttribPointer(index, size, type, normalized, stride, &pointer);
-		checkGLErrors();
-	}
+
+	enableVertexAttribArray(index);
+	glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+	checkGLErrors();
 }
 
 void Gl::VAO::disableVertexAttribArray(GLuint index)

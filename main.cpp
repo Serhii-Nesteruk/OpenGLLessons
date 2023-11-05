@@ -23,11 +23,11 @@ int main() {
 
 	Gl::viewport(0, 0, 600, 600);
 
-	GLuint vertexShader = Gl::Shader::createAndLoadFromFile("D:/OpenGL projects/OpenGLLessons/assets/shaders/main.vert",
+	GLuint vertexShader = Gl::Shader::createAndLoadFromFile("assets/shaders/main.vert",
 		Gl::Shader::Type::VERTEX);
-	GLuint fragmentShader = Gl::Shader::createAndLoadFromFile("D:/OpenGL projects/OpenGLLessons/assets/shaders/main.frag",
+	GLuint fragmentShader = Gl::Shader::createAndLoadFromFile("assets/shaders/main.frag",
 		Gl::Shader::Type::FRAGMENT);
-
+	
 	if (!Gl::Shader::getShaderiv(vertexShader, GL_COMPILE_STATUS)) {
 		GLchar infoLog[512];
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
@@ -88,10 +88,7 @@ int main() {
 	Gl::VBO::bind(GL_ARRAY_BUFFER, VBO);
 	Gl::VBO::buffData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
 
-	Gl::VAO::enableVertexAttribArray(0);
 	Gl::VAO::vertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
-
-	Gl::VAO::enableVertexAttribArray(1);
 	Gl::VAO::vertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
 
 	Gl::VBO::unbind(GL_ARRAY_BUFFER);
