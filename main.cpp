@@ -5,6 +5,9 @@
 
 #include "Gl.h"
 #include "Window.h"
+#include "glm/glm.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 using namespace std;
 
@@ -121,6 +124,18 @@ int main() {
 	}
 	stbi_image_free(data);
 
+
+	glm::mat4 modelMatrix = glm::mat4(1.0);
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(200, 0, 0));
+
+	GLint uModelMatrix = glGetUniformLocation(shaderProgram, "uModelMatrix");
+	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	
+	glm::mat4 cameraMatrix = glm::mat4(1.0);
+	cameraMatrix = glm::translate(cameraMatrix, glm::vec3(200, 420, 0));
+
+	GLint uCameraMatrix = glGetUniformLocation(shaderProgram, "uCameraMatrix");
+	glUniformMatrix4fv(uCameraMatrix, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 
 	while (!glfwWindowShouldClose(window.getWinTarget())) {
 		window.clearColor(0.2f, 0.3f, 0.3f, 1.f);
