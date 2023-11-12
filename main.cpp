@@ -1,3 +1,6 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include <iostream>
 
 #include "Gl.h"
@@ -47,7 +50,6 @@ int main() {
 	Gl::Program::link(shaderProgram);
 
 	if (!Gl::Program::getProgramiv(shaderProgram, GL_LINK_STATUS)) {
-		std::cerr << "Failed to link a shader program" << std::endl;
 		GLchar infoLog[512];
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 		std::cerr << "Failed to compile the shader program:\n" << infoLog << std::endl;
@@ -62,9 +64,7 @@ int main() {
 	GLint windowWidth = 0, windowHeight = 0;
 	glfwGetFramebufferSize(window.getWinTarget(), &windowWidth, &windowHeight);
 	GLint windowSizeLocation = glGetUniformLocation(shaderProgram, "uWindowSize");
-
 	glUniform2f(windowSizeLocation, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
-	//Gl::Program::uniform2f(windowSizeLocation, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
 
 
 	GLfloat vertices[] =
@@ -95,6 +95,32 @@ int main() {
 
 	Gl::VBO::unbind(GL_ARRAY_BUFFER);
 	Gl::VAO::unbind();
+
+	GLuint texture = GL_INVALID_INDEX;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	GLint width = 0, height = 0, nrChannels = 0;
+
+	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+	// The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+	unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
 
 	while (!glfwWindowShouldClose(window.getWinTarget())) {
 		window.clearColor(0.2f, 0.3f, 0.3f, 1.f);
