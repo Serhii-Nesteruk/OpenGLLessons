@@ -32,19 +32,12 @@ int main() {
 		GLchar infoLog[512];
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
 		std::cerr << "Failed to compile the vertex shader:\n" << infoLog << std::endl;
-		Gl::Shader::deleteShader(vertexShader);
-		Gl::Shader::deleteShader(fragmentShader);
-		glfwTerminate();
 		return 1;
 	}
 	if (!Gl::Shader::getShaderiv(fragmentShader, GL_COMPILE_STATUS)) {
 		GLchar infoLog[512];
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
 		std::cerr << "Failed to compile the vertex shader:\n" << infoLog << std::endl;
-		Gl::Shader::deleteShader(vertexShader);
-		Gl::Shader::deleteShader(fragmentShader);
-
-		glfwTerminate();
 		return 1;
 	}
 
@@ -55,27 +48,35 @@ int main() {
 
 	if (!Gl::Program::getProgramiv(shaderProgram, GL_LINK_STATUS)) {
 		std::cerr << "Failed to link a shader program" << std::endl;
-		Gl::Program::deleteProgram(shaderProgram);
-		Gl::Shader::deleteShader(vertexShader);
-		Gl::Shader::deleteShader(fragmentShader);
-
-		glfwTerminate();
+		GLchar infoLog[512];
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		std::cerr << "Failed to compile the shader program:\n" << infoLog << std::endl;
 		return 1;
 	}
 
 	Gl::Shader::deleteShader(vertexShader);
 	Gl::Shader::deleteShader(fragmentShader);
 
+	Gl::Program::use(shaderProgram);
+
+	GLint windowWidth = 0, windowHeight = 0;
+	glfwGetFramebufferSize(window.getWinTarget(), &windowWidth, &windowHeight);
+	GLint windowSizeLocation = glGetUniformLocation(shaderProgram, "uWindowSize");
+
+	glUniform2f(windowSizeLocation, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
+	//Gl::Program::uniform2f(windowSizeLocation, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
+
+
 	GLfloat vertices[] =
 	{
 		// VERTICES          COLOR
-		-0.5,  0.5,		 1.0, 0.0, 0.0,
-		-0.5, -0.5,		 0.0, 1.0, 0.0,
-		0.5, -0.5,		 0.0, 0.0, 1.0,
+		-100,  100,		 0.0, 0.0, 1.0,		 0.0, 1.0,
+		-100, -100,		 0.0, 0.0, 1.0,	     0.0, 0.0,
+		100, -100,		 0.0, 0.0, 1.0,		 1.0, 0.0,
 
-		-0.5,  0.5,		 1.0, 0.0, 0.0,
-		0.5, -0.5,		 0.0, 0.0, 1.0,
-		0.5, 0.5,		 0.0, 1.0, 0.0,
+		-100,  100,		 0.0, 0.0, 1.0,		 0.0, 1.0,
+		100, -100,		 0.0, 0.0, 1.0,		 1.0, 0.0,
+		100, 100,		 0.0, 0.0, 1.0,		 1.0, 1.0,
 	};
 
 	GLuint VAO = 0;
@@ -88,8 +89,9 @@ int main() {
 	Gl::VBO::bind(GL_ARRAY_BUFFER, VBO);
 	Gl::VBO::buffData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
 
-	Gl::VAO::vertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
-	Gl::VAO::vertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
+	Gl::VAO::vertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), nullptr);
+	Gl::VAO::vertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
+	Gl::VAO::vertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(5 * sizeof(float)));
 
 	Gl::VBO::unbind(GL_ARRAY_BUFFER);
 	Gl::VAO::unbind();
