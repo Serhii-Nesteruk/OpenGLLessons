@@ -100,23 +100,25 @@ int main() {
 	Gl::VAO::unbind();
 
 	GLuint texture = GL_INVALID_INDEX;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	Gl::Texture::generate(1, &texture);
+	Gl::Texture::bind(texture);
+	
+	Gl::Texture::setWrapS(Gl::Texture::Wrap::Repeat);
+	Gl::Texture::setWrapT(Gl::Texture::Wrap::Repeat);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	Gl::Texture::setMinFilter(Gl::Texture::MinFilter::Linear);
+	Gl::Texture::setMagFilter(Gl::Texture::MagFilter::Linear);
 	GLint width = 0, height = 0, nrChannels = 0;
 
-	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-	// The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		Gl::Texture::texImage2D(Gl::Texture::Target::Texture2D, 0, Gl::Texture::Channel::RGB,
+			width, height, 0, Gl::Texture::Channel::RGB, GL_UNSIGNED_BYTE, data);
+		Gl::Texture::generateMipmap();
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		//glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{

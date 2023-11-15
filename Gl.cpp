@@ -545,3 +545,92 @@ void Gl::Program::uniformMatrix4x3fv(GLint location, GLsizei count, GLboolean tr
 	glUniformMatrix4x3fv(location, count, transponse, value);
 	checkGLErrors();
 }
+
+void Gl::Texture::generate(GLsizei n, GLuint* textures)
+{
+	glGenTextures(n, textures);
+	checkGLErrors();
+}
+
+void Gl::Texture::bind(GLuint texture, Target target)
+{
+	id = texture;
+	glBindTexture(static_cast<GLenum>(target), texture);
+	checkGLErrors();
+}
+
+void Gl::Texture::setWrapS(Wrap param, Target target)
+{
+	if (id == invalidId)
+		throw std::runtime_error("You can't set WrapS without binding texture");
+
+	glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_WRAP_S,
+		static_cast<GLint>(param));
+	checkGLErrors();
+}
+
+void Gl::Texture::setWrapT(Wrap param, Target target)
+{
+	if (id == invalidId)
+		throw std::runtime_error("You can't set WrapT without binding texture");
+
+	glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_WRAP_T,
+		static_cast<GLint>(param));
+	checkGLErrors();
+}
+
+void Gl::Texture::setWrapR(Wrap param, Target target)
+{
+	if (id == invalidId)
+		throw std::runtime_error("You can't set WrapR without binding texture");
+
+	glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_WRAP_R,
+		static_cast<GLint>(param));
+	checkGLErrors();
+}
+
+void Gl::Texture::setMinFilter(MinFilter param, Target target)
+{
+	if (id == invalidId)
+		throw std::runtime_error("You can't set min filter without binding texture");
+
+	glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_MIN_FILTER, 
+		static_cast<GLint>(param));
+	checkGLErrors();
+}
+
+void Gl::Texture::setMagFilter(MagFilter param, Target target)
+{
+	if (id == invalidId)
+		throw std::runtime_error("You can't set min filter without binding texture");
+
+	glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_MIN_FILTER,
+		static_cast<GLint>(param));
+	checkGLErrors();
+}
+
+void Gl::Texture::texImage2D(Target target, GLint level, Channel internalFormat, GLsizei width, GLsizei height, GLint border, Channel format, GLenum type, const void* pixels)
+{
+	if (id == invalidId)
+		throw std::runtime_error("Texture are not bound !!!");
+
+	glTexImage2D(static_cast<GLenum>(target), level, static_cast<GLint>(internalFormat),
+		width, height, border, static_cast<GLenum>(format), type, pixels);
+	checkGLErrors();
+}
+
+void Gl::Texture::generateMipmap(Target target)
+{
+	if (id == invalidId)
+		throw std::runtime_error("Texture are not bound !!!");
+
+	glGenerateMipmap(static_cast<GLenum>(target));
+	checkGLErrors();
+}
+
+void Gl::Texture::deleteTexture(GLsizei n, GLuint* texture)
+{
+	id = invalidId;
+	glDeleteTextures(n, texture);
+	checkGLErrors();
+}

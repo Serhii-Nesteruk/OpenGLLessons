@@ -123,7 +123,19 @@ public:
 			SRGBA = GL_SRGB_ALPHA
 		};
 
-		static void generate(GLsizei n, GLuint textures);
+		static void generate(GLsizei n, GLuint* textures);
+		static void bind(GLuint texture, Target target = Target::Texture2D);
+		static void setWrapS(Wrap param, Target target = Target::Texture2D);
+		static void setWrapT(Wrap param, Target target = Target::Texture2D);
+		static void setWrapR(Wrap param, Target target = Target::Texture2D);
+		static void setMinFilter(MinFilter param, Target target = Target::Texture2D);
+		static void setMagFilter(MagFilter param, Target target = Target::Texture2D);
+		static void texImage2D(Target target, GLint level, Channel internalFormat,
+			GLsizei width, GLsizei height, GLint border, Channel format,
+			GLenum type, const void* pixels);
+		static void generateMipmap(Target target = Target::Texture2D);
+		static void deleteTexture(GLsizei n, GLuint* texture);
+
 	private:
 		inline static GLuint id = invalidId;
 	};
