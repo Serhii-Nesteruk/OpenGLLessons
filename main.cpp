@@ -66,8 +66,8 @@ int main() {
 
 	GLint windowWidth = 0, windowHeight = 0;
 	glfwGetFramebufferSize(window.getWinTarget(), &windowWidth, &windowHeight);
-	GLint windowSizeLocation = glGetUniformLocation(shaderProgram, "uWindowSize");
-	glUniform2f(windowSizeLocation, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
+	GLint windowSizeLocation = Gl::Program::getUniformLocation(shaderProgram, "uWindowSize");
+	Gl::Program::uniform2f(windowSizeLocation, static_cast<GLfloat>(windowWidth), static_cast<GLfloat>(windowHeight));
 
 
 	GLfloat vertices[] =
@@ -128,14 +128,14 @@ int main() {
 	glm::mat4 modelMatrix = glm::mat4(1.0);
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(200, 0, 0));
 
-	GLint uModelMatrix = glGetUniformLocation(shaderProgram, "uModelMatrix");
-	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	GLint uModelMatrix = Gl::Program::getUniformLocation(shaderProgram, "uModelMatrix");
+	Gl::Program::uniformMatrix4fv(uModelMatrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 	
 	glm::mat4 cameraMatrix = glm::mat4(1.0);
 	cameraMatrix = glm::translate(cameraMatrix, glm::vec3(200, 420, 0));
 
-	GLint uCameraMatrix = glGetUniformLocation(shaderProgram, "uCameraMatrix");
-	glUniformMatrix4fv(uCameraMatrix, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	GLint uCameraMatrix = Gl::Program::getUniformLocation(shaderProgram, "uCameraMatrix");
+	Gl::Program::uniformMatrix4fv(uCameraMatrix, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 
 	while (!glfwWindowShouldClose(window.getWinTarget())) {
 		window.clearColor(0.2f, 0.3f, 0.3f, 1.f);
