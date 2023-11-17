@@ -126,6 +126,34 @@ int main() {
 	}
 	stbi_image_free(data);
 
+	GLuint texture2 = GL_INVALID_INDEX;
+	Gl::Texture::generate(1, &texture2);
+
+	Gl::Texture::setWrapS(Gl::Texture::Wrap::Repeat);
+	Gl::Texture::setWrapT(Gl::Texture::Wrap::Repeat);
+
+	Gl::Texture::setMinFilter(Gl::Texture::MinFilter::Linear);
+	Gl::Texture::setMagFilter(Gl::Texture::MagFilter::Linear);
+
+	stbi_set_flip_vertically_on_load(true);
+	data = stbi_load("smiley-face.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		Gl::Texture::texImage2D(Gl::Texture::Target::Texture2D, 0, Gl::Texture::Channel::RGB,
+			width, height, 0, Gl::Texture::Channel::RGB, GL_UNSIGNED_BYTE, data);
+		Gl::Texture::generateMipmap();
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
+	Gl::Program::use(shaderProgram);
+	Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram, "texture1"), 0);
+	Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram, "texture2"), 1);
 
 	glm::mat4 modelMatrix = glm::mat4(1.0);
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(200, 0, 0));
@@ -142,6 +170,11 @@ int main() {
 	while (!glfwWindowShouldClose(window.getWinTarget())) {
 		window.clearColor(0.2f, 0.3f, 0.3f, 1.f);
 		window.clear(GL_COLOR_BUFFER_BIT);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		Gl::Program::use(shaderProgram);
 		Gl::VAO::bind(VAO);
