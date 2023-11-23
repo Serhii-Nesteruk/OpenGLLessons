@@ -93,10 +93,8 @@ void Gl::VAO::disableVertexAttribArray(GLuint index)
 {
 	if (!isBind())
 		throw std::exception("VAO is not bound");
-	else {
-		glDisableVertexAttribArray(index);
-		checkGLErrors();
-	}
+	glDisableVertexAttribArray(index);
+	checkGLErrors();
 }
 
 void Gl::VAO::deleteVertexArrays(GLsizei n, GLuint* arrays)
@@ -111,19 +109,19 @@ void Gl::checkGLErrors()
 	switch (glGetError())
 	{
 		case GL_INVALID_ENUM:
-			throw std::exception("Set when an enumeration parameter is not legal");
+			throw std::runtime_error("Set when an enumeration parameter is not legal");
 		case GL_INVALID_VALUE:
-			throw std::exception("Set when a value parameter is not legal");
+			throw std::runtime_error("Set when a value parameter is not legal");
 		case GL_INVALID_OPERATION:
-			throw std::exception("Set when the state for a command is not legal for its given parameters");
+			throw std::runtime_error("Set when the state for a command is not legal for its given parameters");
 		case GL_STACK_OVERFLOW:
-			throw std::exception("Set when a stack pushing operation causes a stack overflow");
+			throw std::runtime_error("Set when a stack pushing operation causes a stack overflow");
 		case GL_STACK_UNDERFLOW:
-			throw std::exception("Set when a stack popping operation occurs while the stack is at its lowest point");
+			throw std::runtime_error("Set when a stack popping operation occurs while the stack is at its lowest point");
 		case GL_OUT_OF_MEMORY:
-			throw std::exception("Set when a memory allocation operation cannot allocate (enough) memory");
+			throw std::runtime_error("Set when a memory allocation operation cannot allocate (enough) memory");
 		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			throw std::exception("Set when reading or writing to a framebuffer that is not complete");
+			throw std::runtime_error("Set when reading or writing to a framebuffer that is not complete");
 	}
 }
 

@@ -1,7 +1,7 @@
+#include <iostream>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-#include <iostream>
 
 #include "Gl.h"
 #include "Window.h"
@@ -40,6 +40,7 @@ int main() {
 		std::cerr << "Failed to compile the vertex shader:\n" << infoLog << std::endl;
 		return 1;
 	}
+
 	if (!Gl::Shader::getShaderiv(fragmentShader, GL_COMPILE_STATUS)) {
 		GLchar infoLog[512];
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
@@ -68,7 +69,6 @@ int main() {
 	glfwGetFramebufferSize(window.getWinTarget(), &windowWidth, &windowHeight);
 	GLint windowSizeLocation = Gl::Program::getUniformLocation(shaderProgram, "uWindowSize");
 	Gl::Program::uniform2f(windowSizeLocation, static_cast<GLfloat>(windowWidth), static_cast<GLfloat>(windowHeight));
-
 
 	GLfloat vertices[] =
 	{
@@ -117,8 +117,6 @@ int main() {
 		Gl::Texture::texImage2D(Gl::Texture::Target::Texture2D, 0, Gl::Texture::Channel::RGB,
 			width, height, 0, Gl::Texture::Channel::RGB, GL_UNSIGNED_BYTE, data);
 		Gl::Texture::generateMipmap();
-		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		//glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{
@@ -128,6 +126,7 @@ int main() {
 
 	GLuint texture2 = GL_INVALID_INDEX;
 	Gl::Texture::generate(1, &texture2);
+	Gl::Texture::bind(texture2);
 
 	Gl::Texture::setWrapS(Gl::Texture::Wrap::Repeat);
 	Gl::Texture::setWrapT(Gl::Texture::Wrap::Repeat);
@@ -142,8 +141,6 @@ int main() {
 		Gl::Texture::texImage2D(Gl::Texture::Target::Texture2D, 0, Gl::Texture::Channel::RGB,
 			width, height, 0, Gl::Texture::Channel::RGB, GL_UNSIGNED_BYTE, data);
 		Gl::Texture::generateMipmap();
-		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		//glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{
@@ -152,7 +149,7 @@ int main() {
 	stbi_image_free(data);
 
 	Gl::Program::use(shaderProgram);
-	Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram, "texture1"), 0);
+	Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram, "texture1"), 0);//*
 	Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram, "texture2"), 1);
 
 	glm::mat4 modelMatrix = glm::mat4(1.0);

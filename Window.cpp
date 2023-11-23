@@ -15,7 +15,6 @@ void Window::create(GLint width, GLint height,const std::string& title, GLFWmoni
 
 	this->width = width;
 	this->height = height;
-
 }
 
 void Window::swapBuffers(GLFWwindow* window)
