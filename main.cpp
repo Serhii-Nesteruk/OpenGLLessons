@@ -4,6 +4,7 @@
 #include "stb_image.h"
 
 #include "Shader.h"
+#include "ShaderProgram.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "Window.h"
@@ -34,25 +35,29 @@ int main() {
 	Shader vertexShader("assets/shaders/main.vert", Gl::Shader::Type::VERTEX);
 	Shader fragmentShader("assets/shaders/main.frag", Gl::Shader::Type::FRAGMENT);
 
-	GLuint shaderProgram = Gl::Program::create();
-	Gl::Program::attachShader(shaderProgram, vertexShader.getShader());
-	Gl::Program::attachShader(shaderProgram, fragmentShader.getShader());
-	Gl::Program::link(shaderProgram);
+	ShaderProgram shaderProgram(vertexShader.getShader(), fragmentShader.getShader());
 
-	if (!Gl::Program::getProgramiv(shaderProgram, GL_LINK_STATUS)) {
-		GLchar infoLog[512];
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cerr << "Failed to compile the shader program:\n" << infoLog << std::endl;
-		return 1;
-	}
-
-	Gl::Program::use(shaderProgram);
+	//shaderProgram.use();
+	//GLuint shaderProgram = Gl::Program::create();
+	//Gl::Program::attachShader(shaderProgram, vertexShader.getShader());
+	//Gl::Program::attachShader(shaderProgram, fragmentShader.getShader());
+	//Gl::Program::link(shaderProgram);
+	//
+	//if (!Gl::Program::getProgramiv(shaderProgram, GL_LINK_STATUS)) {
+	//	GLchar infoLog[512];
+	//	glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+	//	std::cerr << "Failed to compile the shader program:\n" << infoLog << std::endl;
+	//	return 1;
+	//}
+	//
+	//Gl::Program::use(shaderProgram.getProgram());
+	shaderProgram.use();
 
 	GLint windowWidth = 0, windowHeight = 0;
 	glfwGetFramebufferSize(window.getWinTarget(), &windowWidth, &windowHeight);
-	GLint windowSizeLocation = Gl::Program::getUniformLocation(shaderProgram, "uWindowSize");
-	Gl::Program::uniform2f(windowSizeLocation, static_cast<GLfloat>(windowWidth), static_cast<GLfloat>(windowHeight));
-
+	//GLint windowSizeLocation = Gl::Program::getUniformLocation(shaderProgram.getProgram(), "uWindowSize");
+	//Gl::Program::uniform2f(windowSizeLocation, static_cast<GLfloat>(windowWidth), static_cast<GLfloat>(windowHeight));
+	shaderProgram.uniform("uWindowSize", static_cast<GLfloat>(windowWidth), static_cast<GLfloat>(windowHeight));	
 	std::vector<GLfloat> vertices =
 	{
 		// VERTICES          COLOR
@@ -125,21 +130,32 @@ int main() {
 	}
 	stbi_image_free(data);
 
-	Gl::Program::use(shaderProgram);
-	Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram, "texture1"), 0);//*
-	Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram, "texture2"), 1);
+	//shaderProgram.use();
+	//shaderProgram.uniform1i("texture1", 0);
+	//shaderProgram.uniform1i("texture2", 1);
+	shaderProgram.use();
+//	Gl::Program::use(shaderProgram.getProgram());
+	//Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram.getProgram(), "texture1"), 0);//*
+	//Gl::Program::uniform1i(Gl::Program::getUniformLocation(shaderProgram.getProgram(), "texture2"), 1);
+
+	shaderProgram.uniform("texture1", 0);
+	shaderProgram.uniform("texture2", 1);
 
 	glm::mat4 modelMatrix = glm::mat4(1.0);
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(200, 0, 0));
 
-	GLint uModelMatrix = Gl::Program::getUniformLocation(shaderProgram, "uModelMatrix");
-	Gl::Program::uniformMatrix4fv(uModelMatrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-	
+	//shaderProgram.uniformMatrix4fv("uModelMatrix", 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	GLint uModelMatrix = Gl::Program::getUniformLocation(shaderProgram.getProgram(), "uModelMatrix");
+	//Gl::Program::uniformMatrix4fv(uModelMatrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	shaderProgram.uniform("uModelMatrix", 1, GL_FALSE, modelMatrix);
+
 	glm::mat4 cameraMatrix = glm::mat4(1.0);
 	cameraMatrix = glm::translate(cameraMatrix, glm::vec3(200, 420, 0));
 
-	GLint uCameraMatrix = Gl::Program::getUniformLocation(shaderProgram, "uCameraMatrix");
-	Gl::Program::uniformMatrix4fv(uCameraMatrix, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	//shaderProgram.uniformMatrix4fv("uCameraMatrix", 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	GLint uCameraMatrix = Gl::Program::getUniformLocation(shaderProgram.getProgram(), "uCameraMatrix");
+	//Gl::Program::uniformMatrix4fv(uCameraMatrix, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	shaderProgram.uniform("uCameraMatrix", 1, GL_FALSE, cameraMatrix);
 
 	while (!glfwWindowShouldClose(window.getWinTarget())) {
 		window.clearColor(0.2f, 0.3f, 0.3f, 1.f);
@@ -150,15 +166,13 @@ int main() {
 		Gl::Texture::activeTexture(GL_TEXTURE1);
 		Gl::Texture::bind(texture2);
 		
-		Gl::Program::use(shaderProgram);
+		shaderProgram.use();
 		vao.bind();
 		Gl::drawArrays(GL_TRIANGLES, 0, 6);
 
 		window.swapBuffers(window.getWinTarget());
 		window.pollEvents();
 	}
-
-	Gl::Program::deleteProgram(shaderProgram);
 
 	glfwTerminate();
 

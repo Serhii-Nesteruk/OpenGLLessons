@@ -1,32 +1,3 @@
-//#pragma once
-//
-//#include "Gl.h"
-//
-//#include <filesystem>
-//
-//class Shader 
-//{
-//public:
-//	explicit Shader(Gl::Shader::Type type, bool shouldCreate = true);
-//	Shader(const std::filesystem::path& path, Gl::Shader::Type type);
-//	~Shader();
-//
-//	void create();
-//	void loadFromFile(const std::filesystem::path& path);
-//	void setType(Gl::Shader::Type type);
-//	[[nodiscard]] Gl::Shader::Type getType() const;
-//	void compile() const;
-//	void setSource(const std::string& source);
-//	[[nodiscard]] const std::string& getSource();
-//	void deleteShader();
-//	GLuint data() const;
-//
-//private:
-//	std::string source_;
-//	Gl::Shader::Type type_ = Gl::Shader::Type::FRAGMENT;
-//	GLuint data_ = Gl::Shader::invalidId;
-//};
-
 #pragma once
 
 #include "Gl.h"
@@ -58,6 +29,9 @@ public:
 
 	[[nodiscard]] bool isCreate() const;
 	[[nodiscard]] bool isCompile() const;
+
+private:
+	void checkCompileStatus();
 
 private:
 	bool isCompile_ = false;
