@@ -135,6 +135,7 @@ public:
 			GLenum type, const void* pixels);
 		static void generateMipmap(Target target = Target::Texture2D);
 		static void deleteTexture(GLsizei n, GLuint* texture);
+		static void activeTexture(GLenum texture);
 
 	private:
 		inline static GLuint id = invalidId;

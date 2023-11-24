@@ -3,9 +3,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "Shader.h"
 #include "VAO.h"
 #include "VBO.h"
-#include "Gl.h"
 #include "Window.h"
 #include "glm/glm.hpp"
 #include "glm/gtx/transform.hpp"
@@ -31,28 +31,12 @@ int main() {
 
 	Gl::viewport(0, 0, 600, 600);
 
-	GLuint vertexShader = Gl::Shader::createAndLoadFromFile("assets/shaders/main.vert",
-		Gl::Shader::Type::VERTEX);
-	GLuint fragmentShader = Gl::Shader::createAndLoadFromFile("assets/shaders/main.frag",
-		Gl::Shader::Type::FRAGMENT);
-	
-	if (!Gl::Shader::getShaderiv(vertexShader, GL_COMPILE_STATUS)) {
-		GLchar infoLog[512];
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cerr << "Failed to compile the vertex shader:\n" << infoLog << std::endl;
-		return 1;
-	}
-
-	if (!Gl::Shader::getShaderiv(fragmentShader, GL_COMPILE_STATUS)) {
-		GLchar infoLog[512];
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cerr << "Failed to compile the vertex shader:\n" << infoLog << std::endl;
-		return 1;
-	}
+	Shader vertexShader("assets/shaders/main.vert", Gl::Shader::Type::VERTEX);
+	Shader fragmentShader("assets/shaders/main.frag", Gl::Shader::Type::FRAGMENT);
 
 	GLuint shaderProgram = Gl::Program::create();
-	Gl::Program::attachShader(shaderProgram, vertexShader);
-	Gl::Program::attachShader(shaderProgram, fragmentShader);
+	Gl::Program::attachShader(shaderProgram, vertexShader.getShader());
+	Gl::Program::attachShader(shaderProgram, fragmentShader.getShader());
 	Gl::Program::link(shaderProgram);
 
 	if (!Gl::Program::getProgramiv(shaderProgram, GL_LINK_STATUS)) {
@@ -61,9 +45,6 @@ int main() {
 		std::cerr << "Failed to compile the shader program:\n" << infoLog << std::endl;
 		return 1;
 	}
-
-	Gl::Shader::deleteShader(vertexShader);
-	Gl::Shader::deleteShader(fragmentShader);
 
 	Gl::Program::use(shaderProgram);
 
@@ -88,16 +69,11 @@ int main() {
 	VAO vao(true, true);	
 	VBO vbo(vertices);
 
-	//Gl::VBO::generate(1, &VBO);
-	//Gl::VBO::bind(GL_ARRAY_BUFFER, VBO);
-	//Gl::VBO::buffData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-	
 	vao.vertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), nullptr);
 	vao.vertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
 	vao.vertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(5 * sizeof(float)));
 
 	vao.unbind();
-//	Gl::VBO::unbind(GL_ARRAY_BUFFER);
 	vbo.unbind();
 
 	GLuint texture = GL_INVALID_INDEX;
@@ -169,11 +145,11 @@ int main() {
 		window.clearColor(0.2f, 0.3f, 0.3f, 1.f);
 		window.clear(GL_COLOR_BUFFER_BIT);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
-
+		Gl::Texture::activeTexture(GL_TEXTURE0);
+		Gl::Texture::bind(texture);
+		Gl::Texture::activeTexture(GL_TEXTURE1);
+		Gl::Texture::bind(texture2);
+		
 		Gl::Program::use(shaderProgram);
 		vao.bind();
 		Gl::drawArrays(GL_TRIANGLES, 0, 6);
@@ -182,7 +158,6 @@ int main() {
 		window.pollEvents();
 	}
 
-	//Gl::VBO::deleteBuffers(1, &VBO);
 	Gl::Program::deleteProgram(shaderProgram);
 
 	glfwTerminate();

@@ -633,3 +633,9 @@ void Gl::Texture::deleteTexture(GLsizei n, GLuint* texture)
 	glDeleteTextures(n, texture);
 	checkGLErrors();
 }
+
+void Gl::Texture::activeTexture(GLenum texture)
+{
+	glActiveTexture(texture);
+	checkGLErrors();
+}
