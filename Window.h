@@ -16,7 +16,7 @@ public:
 	void initGLFWVersion(int hint, int value);
 	void makeContextCurrent(GLFWwindow* window);
 
-	GLFWwindow* getWinTarget() const;
+	[[nodiscard]] GLFWwindow* getWinTarget() const;
 private:
 	GLFWwindow* window;
 	GLint width = 0;

@@ -2,6 +2,7 @@
 #include "Utils.h"
 
 #include <iostream>
+#include "VAO.h"
 
 void Gl::VBO::generate(GLsizei n, GLuint* arrays)
 {

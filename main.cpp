@@ -3,6 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "VAO.h"
+#include "VBO.h"
 #include "Gl.h"
 #include "Window.h"
 #include "glm/glm.hpp"
@@ -70,7 +72,7 @@ int main() {
 	GLint windowSizeLocation = Gl::Program::getUniformLocation(shaderProgram, "uWindowSize");
 	Gl::Program::uniform2f(windowSizeLocation, static_cast<GLfloat>(windowWidth), static_cast<GLfloat>(windowHeight));
 
-	GLfloat vertices[] =
+	std::vector<GLfloat> vertices =
 	{
 		// VERTICES          COLOR
 		-100,  100,		 0.0, 0.0, 1.0,		 0.0, 1.0,
@@ -81,23 +83,22 @@ int main() {
 		100, -100,		 0.0, 0.0, 1.0,		 1.0, 0.0,
 		100, 100,		 0.0, 0.0, 1.0,		 1.0, 1.0,
 	};
+	//GLuint VBO = 0;
+	
+	VAO vao(true, true);	
+	VBO vbo(vertices);
 
-	GLuint VAO = 0;
-	GLuint VBO = 0;
+	//Gl::VBO::generate(1, &VBO);
+	//Gl::VBO::bind(GL_ARRAY_BUFFER, VBO);
+	//Gl::VBO::buffData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+	
+	vao.vertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), nullptr);
+	vao.vertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
+	vao.vertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(5 * sizeof(float)));
 
-	Gl::VAO::generate(1, &VAO);
-	Gl::VAO::bind(VAO);
-
-	Gl::VBO::generate(1, &VBO);
-	Gl::VBO::bind(GL_ARRAY_BUFFER, VBO);
-	Gl::VBO::buffData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-
-	Gl::VAO::vertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), nullptr);
-	Gl::VAO::vertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
-	Gl::VAO::vertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(5 * sizeof(float)));
-
-	Gl::VBO::unbind(GL_ARRAY_BUFFER);
-	Gl::VAO::unbind();
+	vao.unbind();
+//	Gl::VBO::unbind(GL_ARRAY_BUFFER);
+	vbo.unbind();
 
 	GLuint texture = GL_INVALID_INDEX;
 	Gl::Texture::generate(1, &texture);
@@ -174,15 +175,14 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		Gl::Program::use(shaderProgram);
-		Gl::VAO::bind(VAO);
+		vao.bind();
 		Gl::drawArrays(GL_TRIANGLES, 0, 6);
 
 		window.swapBuffers(window.getWinTarget());
 		window.pollEvents();
 	}
 
-	Gl::VAO::deleteVertexArrays(1, &VAO);
-	Gl::VBO::deleteBuffers(1, &VBO);
+	//Gl::VBO::deleteBuffers(1, &VBO);
 	Gl::Program::deleteProgram(shaderProgram);
 
 	glfwTerminate();
