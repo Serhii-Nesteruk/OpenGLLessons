@@ -8,6 +8,7 @@
 class Window {
 public:
 	Window();
+	~Window();
 	void create(GLint width, GLint height, const std::string& title, GLFWmonitor* monitor, GLFWwindow* share);
 	void swapBuffers(GLFWwindow* window);
 	void pollEvents();

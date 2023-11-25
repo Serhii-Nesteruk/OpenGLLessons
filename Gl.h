@@ -146,7 +146,7 @@ public:
 		inline static const GLuint invalidId = 0;
 
 		[[nodiscard]] static GLuint create();
-		static void attachShader(GLuint shaderProgram, GLuint shader);
+		static void attachShader(GLuint shader, GLuint shaderProgram);
 		static void link(GLuint shaderProgram);
 		[[nodiscard]] static bool isAttached();
 		static void deleteProgram(GLuint shaderProgram);

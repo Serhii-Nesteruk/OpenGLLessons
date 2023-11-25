@@ -42,8 +42,8 @@ void VBO::unbind()
 void VBO::destroy()
 {
 	if (isGenerated())
-		glGenBuffers(1, &id);
-		//Gl::VBO::deleteBuffers(1, &id);
+		//glDeleteBuffers(1, &id);
+		Gl::VBO::deleteBuffers(1, &id);
 	id = Gl::VBO::invalidId;
 	isBind_ = false;
 }

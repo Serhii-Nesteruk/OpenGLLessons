@@ -32,9 +32,8 @@ bool Gl::VBO::isBind()
 void Gl::VBO::buffData(GLenum target, GLsizeiptr size, const void* data, GLenum usage)
 {
 	if (!isBind())
-		throw std::exception("VBO is not bound");
-	else
-		glBufferData(target, size, data, usage);
+		throw std::runtime_error("VBO is not bound");
+	glBufferData(target, size, data, usage);
 	checkGLErrors(); 
 }
 
@@ -195,11 +194,11 @@ GLuint Gl::Program::create()
 	return shaderProgram;
 }
 
-void Gl::Program::attachShader(GLuint shaderProgram, GLuint shader)
+void Gl::Program::attachShader(GLuint shader, GLuint shaderProgram)
 {
 	glAttachShader(shaderProgram, shader);
-	id = shaderProgram;
 	checkGLErrors();
+	id = shaderProgram;
 }
 
 void Gl::Program::link(GLuint shaderProgram)
@@ -229,6 +228,7 @@ void Gl::Program::use(GLuint shaderProgram)
 		throw std::runtime_error("Shader program is not attached");
 	glUseProgram(shaderProgram);
 	checkGLErrors();
+	id = shaderProgram;
 }
 
 GLint Gl::Program::getProgramiv(GLuint shaderProgram, GLenum pname)

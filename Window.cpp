@@ -5,6 +5,11 @@ Window::Window()
 	glfwInit();
 }
 
+Window::~Window()
+{
+	glfwTerminate();
+}
+
 void Window::create(GLint width, GLint height,const std::string& title, GLFWmonitor* monitor, GLFWwindow* share)
 {
 	window = glfwCreateWindow(width, height, title.c_str(), monitor, share);

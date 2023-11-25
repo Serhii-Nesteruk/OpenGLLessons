@@ -25,24 +25,24 @@ void ShaderProgram::attachShader(GLuint shader)
 {
 	if (!isCreated())
 		throw std::runtime_error("Shader program is not create");
-//	Gl::Program::attachShader(shader, program);
-	glAttachShader(program, shader);
+    Gl::Program::attachShader(shader, program);
+	//glAttachShader(program, shader);
 	isAttached_ = true;
 	isLinked_ = false;
 }
 
 void ShaderProgram::create()
 {
-	program = glCreateProgram();
-	//program = Gl::Program::create();
+	//program = glCreateProgram();
+	program = Gl::Program::create();
 }
 
 void ShaderProgram::link()
 {
 	if (!isAttached())
 		throw std::runtime_error("You can't to link the shader program, bacause the program is not attached");
-	//Gl::Program::link(program);
-	glLinkProgram(program);
+	Gl::Program::link(program);
+	//glLinkProgram(program);
 	checkLinkStatus();
 
 	isLinked_ = true;
@@ -53,8 +53,8 @@ void ShaderProgram::use()
 	if (!isLinked())
 		throw std::runtime_error("You can't to use the shader program, because the program is not linked");
 
-	//Gl::Program::use(program);
-	glUseProgram(program);
+	Gl::Program::use(program);
+	//glUseProgram(program);
 }
 
 void ShaderProgram::destroy()
@@ -120,8 +120,8 @@ void ShaderProgram::uniform(const std::string& name, GLfloat v0, GLfloat v1, GLf
 void ShaderProgram::uniform(const std::string& name, GLint v0)
 {
 	GLint location = Gl::Program::getUniformLocation(program, name.data());
-	//Gl::Program::uniform1i(location, v0);
-	glUniform1i(location, v0);
+	Gl::Program::uniform1i(location, v0);
+	//glUniform1i(location, v0);
 }
 
 void ShaderProgram::uniform(const std::string& name, GLint v0, GLint v1)
